@@ -1,0 +1,8 @@
+.row {
+    margin-bottom: 2em;
+}
+
+.form-inline .form-control{
+    width: 5em;
+    margin-left: 1em;
+}
