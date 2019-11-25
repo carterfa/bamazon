@@ -7,7 +7,8 @@ $(document).ready(function () {
             url: '/api/order',
             data: { "fullorder": orderValues },
         }).then(function (results) {
-            alert(results);
+            alert("Order placed!");
+            console.log(results);
         });
 
     }
@@ -38,10 +39,12 @@ $(document).ready(function () {
         let orderValues = [];
 
         $(".form-control").each(function () {
-            const productid = $(this).data("id");
             const quantity = $(this).val();
-            const productObj = { productid, "quantity": quantity }
-            orderValues.push(productObj);
+            if (quantity > 0) {
+                const productid = $(this).data("id");
+                const productObj = { productid, "quantity": quantity }
+                orderValues.push(productObj);
+            }
         })
 
         sendData(orderValues);
