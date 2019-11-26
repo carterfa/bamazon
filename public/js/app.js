@@ -7,11 +7,39 @@ $(document).ready(function () {
             url: '/api/order',
             data: { "fullorder": orderValues },
         }).then(function (results) {
-            alert("Order placed!");
+            $("#orderModal").show();
+            $("#orderBody").empty();
             console.log(results);
+            let orderTotal = 0;
+            results.forEach(function (item) {
+                let itemTotal = 0;
+
+                //Only calculate item total if item in stock
+                if (typeof item.stock === "number") {
+                    itemTotal = (item.price * item.stock)
+                }
+
+                //adds item to the order modal
+                let itemRow = `<div class="row"><h6 class="col-3">${item.product_name}</h6>
+                <h6 class="col-3">$${item.price}</h6>
+                <h6 class="col-3">${item.stock}</h6>
+                <h6 class="col-3">$${itemTotal.toFixed(2)}</h6><div>`
+                orderTotal += itemTotal;
+                $("#orderBody").append(itemRow);
+            });
+            //Show order total
+            let orderRow = `<div class="row"><div class="col-9"></div><h6 class="col-3">TOTAL: $${orderTotal.toFixed(2)}</h6></div>`;
+            $("#orderBody").append(orderRow);
+
         });
 
     }
+
+    //Modal close button 
+    $(".close").on("click", function () {
+        event.preventDefault();
+        $("#orderModal").hide();
+    });
 
     //Retrieves products from the database
     function getProducts() {
@@ -37,7 +65,7 @@ $(document).ready(function () {
         event.preventDefault();
 
         let orderValues = [];
-
+        //get values from form
         $(".form-control").each(function () {
             const quantity = $(this).val();
             if (quantity > 0) {
@@ -47,7 +75,16 @@ $(document).ready(function () {
             }
         })
 
-        sendData(orderValues);
+        //only send the order if items actually selected
+        if (orderValues.length > 0) {
+            sendData(orderValues);
+        }
+
+        //resets values
+        $(".form-control").each(function () {
+            $(this).val(0);
+    
+        })
 
     });
 
