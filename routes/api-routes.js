@@ -69,6 +69,49 @@ module.exports = function (app) {
 
   });
 
+  //Handles restocking
+  app.put("/api/add", function (req, res) {
+
+    let restockList = req.body.fullstockorder;
+
+    // Goes through order values
+    function runSearch(restockList) {
+
+      for (let i = 0; i < restockList.length; i++) {
+        let productid = parseInt(restockList[i].productid);
+        let counter = 0;
+        //Finds single product based on product id
+        db.Product.findOne({
+          where: {
+            id: productid
+          }
+        }).then(function (result) {
+          //Adds quantity to stock
+          let quantity = parseInt(restockList[i].quantity);
+
+          let restocked = parseInt(result.stock_quantity) + quantity;
+          // Updates stock in database
+          db.Product.update({
+            stock_quantity: restocked
+          }, {
+            where: {
+              id: productid
+            }
+          })
+          counter++;
+          if (counter === restockList.length) {
+            res.send("Restocked!");
+          }
+        })
+      }
+
+    }
+
+    runSearch(restockList);
+
+  });
+
+  //Resets the database
   app.get("/api/reset", function (req, res) {
 
     db.Product.destroy({
@@ -166,7 +209,7 @@ module.exports = function (app) {
 
     })
 
-    res.end();
+    res.send("Database reset.");
 
   })
 
