@@ -4,7 +4,7 @@
   "description": "Upon visiting bamazon, the user can buy a number of products.  Based on available stock in the database, the user will see that their order completed or they will need to adjust their order.  The user will not be able to send an empty order. If not enough stock is in the database, the user will be notified and only the items that are in stock will go through.",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "mysql2": "^2.0.1",
     "sequelize": "^5.21.2",
     "sequelize-cli": "^5.5.1"
